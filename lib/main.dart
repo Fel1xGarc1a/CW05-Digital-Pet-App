@@ -16,6 +16,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "";
   int happinessLevel = 50;
   int hungerLevel = 50;
+  int energyLevel = 50; // New energy level state
   TextEditingController nameController = TextEditingController();
   bool isNameSet = false;
   Timer? winConditionTimer;
@@ -28,6 +29,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     Timer.periodic(Duration(seconds: 30), (timer) {
       setState(() {
         hungerLevel = (hungerLevel + 5).clamp(0, 100);
+        energyLevel = (energyLevel - 5).clamp(0, 100); // Decrease energy over time
         _updateHappiness();
         _checkLossCondition();
       });
@@ -37,6 +39,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   void _playWithPet() {
     setState(() {
       happinessLevel = (happinessLevel + 10).clamp(0, 100);
+      energyLevel = (energyLevel - 15).clamp(0, 100); // Playing decreases energy
       _updateHunger();
       _checkWinCondition();
     });
@@ -45,6 +48,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   void _feedPet() {
     setState(() {
       hungerLevel = (hungerLevel - 10).clamp(0, 100);
+      energyLevel = (energyLevel + 10).clamp(0, 100); // Eating restores energy
       _updateHappiness();
       _checkWinCondition();
     });
@@ -165,6 +169,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
                           SizedBox(height: 16.0),
                           Text('Hunger Level: $hungerLevel',
                               style: TextStyle(fontSize: 20.0)),
+                          SizedBox(height: 16.0),
+                          Text('Energy Level: $energyLevel',
+                              style: TextStyle(fontSize: 20.0)),
+                          SizedBox(height: 16.0),
+                          LinearProgressIndicator(
+                            value: energyLevel / 100,
+                            minHeight: 10,
+                            backgroundColor: Colors.grey[300],
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ),
                           SizedBox(height: 32.0),
                           ElevatedButton(
                             onPressed: _playWithPet,
